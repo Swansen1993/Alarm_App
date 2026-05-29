@@ -10,12 +10,12 @@ import XCTest
 
 final class Alarm_AppTests: XCTestCase {
     
-    var manager : SimulationManager!
+    var manager : SimulationManagerClass!
 
     @MainActor
     override func setUpWithError() throws {
        try super.setUpWithError()
-        manager = SimulationManager.simulationsschicht
+        manager = SimulationManagerClass.simulationsschicht
         manager.resetToAwake()
     }
 

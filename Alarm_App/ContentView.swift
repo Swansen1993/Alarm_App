@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    private var simulator = SimulationManagerClass.simulationsschicht
+    
     var body: some View {
         
         TabView {
@@ -15,20 +18,31 @@ struct ContentView: View {
             NavigationStack {
                 ScrollView {
                     VStack(spacing: 20) {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(.systemGray6))
-                            .frame(height: 120)
-                            .overlay(Text("Platzhalter: Statusanzeige").foregroundColor(.secondary))
                         
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(.systemGray6))
-                            .frame(height: 150)
-                            .overlay(
-                                VStack(spacing: 10) {
-                                    Text("Platzhalter: Bedienung / Buttons").foregroundColor(.secondary)
-                                    Text("(Hier kommt später der Simulations-Button hin)").font(.caption).foregroundColor(.blue)
-                                }
-                            )
+                        VStack{
+                            if simulator.currentStatus == .awake{
+                                Image(systemName: "sun.max.fill")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.orange)
+                                Text("Aktueller Status : Wach")
+                            } else{
+                                Image(systemName: "moon.zzz.fill")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.blue)
+                                Text("Aktueller Status : Schlaf simuliert")
+                            }
+                        }
+                        
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(.systemGray2))
+                        
+                        
+                        Button(action:{
+                            simulator.triggerToAsleep()
+                        }) {
+                            Text("Simuliere Schlaf")
+                        }
                     }
                     .padding()
                 }
