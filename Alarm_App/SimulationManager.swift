@@ -1,5 +1,6 @@
 import Observation
 import Foundation
+import Combine
 
 enum SleepState{
     case awake
@@ -7,15 +8,14 @@ enum SleepState{
 }
 
 
-@Observable  // Stausanderungen werden automatisch an das User Interface gesendet. 
-class SimulationManagerClass {
+  // Stausanderungen werden automatisch an das User Interface gesendet.
+class SimulationManagerClass : ObservableObject {
     static let simulationsschicht = SimulationManagerClass()
     
-    var currentStatus: SleepState = .awake
-    var zielSchlafdauerInStunden: Double = 8.0
-    var eingestellteWeckzeit: Date = Calendar.current.date(bySettingHour: 6, minute: 30, second: 0, of: Date()) ?? Date()
-    
-    var erkannterEinschlafZeitpunkt: Date?
+   @Published var currentStatus: SleepState = .awake
+   @Published var zielSchlafdauerInStunden: Double = 8.0
+   @Published var eingestellteWeckzeit: Date = Calendar.current.date(bySettingHour: 6, minute: 30, second: 0, of: Date()) ?? Date()
+   @Published var erkannterEinschlafZeitpunkt: Date?
 
     
     private init (){}
@@ -40,6 +40,17 @@ class SimulationManagerClass {
             self.currentStatus = .awake
             self.erkannterEinschlafZeitpunkt = nil
             NotificationSoundManager.shared.stopAlarmSound()
+        }
+    
+    func checkObSchlafdauerErreicht(einschlafZeitpunkt: Date, aktuelleZeit: Date, zielSchlafdauerInStunden: Double) -> Bool {
+            let geschlafeneSekunden = aktuelleZeit.timeIntervalSince(einschlafZeitpunkt)
+            let zielSekunden = zielSchlafdauerInStunden * 3600.0
+            
+            if geschlafeneSekunden >= zielSekunden {
+                print("ZIEL-SCHLAFDAUER ERREICHT!")
+                return true
+            }
+            return false
         }
         
     func checkCurrentSleepStatus() {
