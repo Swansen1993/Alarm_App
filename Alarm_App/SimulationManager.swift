@@ -12,15 +12,36 @@ enum SleepState{
 class SimulationManagerClass : ObservableObject {
     static let simulationsschicht = SimulationManagerClass()
     
-   @Published var currentStatus: SleepState = .awake
-   @Published var zielSchlafdauerInStunden: Double = 8.0
-   @Published var eingestellteWeckzeit: Date = Calendar.current.date(bySettingHour: 6, minute: 30, second: 0, of: Date()) ?? Date()
-   @Published var erkannterEinschlafZeitpunkt: Date?
+    @Published var currentStatus: SleepState = .awake
+    @Published var zielSchlafdauerInStunden: Double = 8.0
+    @Published var triggerDelayMinutes:Double = 10
+    @Published var eingestellteWeckzeit: Date = Calendar.current.date(bySettingHour: 6, minute: 30, second: 0, of: Date()) ?? Date()
+    @Published var erkannterEinschlafZeitpunkt: Date?
+    @Published var alarmVolume : Double = 80
 
     
     private init (){}
     
     func  triggerToAsleep(){
+        self.currentStatus = .asleep
+        self.watchData.userSleeping()
+        self.erkannterEinschlafZeitpunkt = Date()
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        
+        print("""
+            Integrationstest : Mock-Daten geladen 
+            Puls : \(watchData.heartRate)
+            Uhrbewegung : \(watchData.motion)
+            Erkannter Einschlafzeitpunkt : \(formatter.string(from: erkannterEinschlafZeitpunkt!)) Uhr
+            Simulierte Uhrzeit : \(watchData.simtime) 
+            Status des Users : \(self.currentStatus)
+            """
+        )
+    }
+    
+    func userAsleep(){
         self.currentStatus = .asleep
     }
     
